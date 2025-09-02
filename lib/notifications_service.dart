@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
@@ -38,7 +39,7 @@ class NotificationsService {
   }
 
   static Future<void> showTestNotification() async {
-    print("Тестовое уведомление отправлено");
+    debugPrint("Тестовое уведомление отправлено");
     final time = DateTime.now().add(Duration(seconds: 10));
     await _notifications.zonedSchedule(
       0,
@@ -80,7 +81,7 @@ class NotificationsService {
           await intent.launch();
           return;
         } catch (e) {
-          print("Intent Failed: $e");
+          debugPrint("Intent Failed: $e");
         }
       }
       if (Platform.isIOS) {
@@ -91,7 +92,7 @@ class NotificationsService {
           );
           return;
         } catch (e) {
-          print("iOs deep link failed: $e");
+          debugPrint("iOs deep link failed: $e");
         }
       }
 
@@ -100,7 +101,7 @@ class NotificationsService {
         mode: LaunchMode.externalApplication,
       );
     } catch (e) {
-      print("all method failed: $e");
+      debugPrint("all method failed: $e");
     }
   }
 
@@ -124,10 +125,10 @@ class NotificationsService {
     required List<int> days,
   }) async {
     await cancelNotification(id);
-    print("Notification: $scheduledTime");
+    debugPrint("Notification: $scheduledTime");
 
     if (days.length == 7) {
-      print("ЕЖЕДНЕВНОЕ УВЕДОМЛЕНИЕ");
+      debugPrint("ЕЖЕДНЕВНОЕ УВЕДОМЛЕНИЕ");
       final scheduled = tz.TZDateTime.from(scheduledTime, tz.local);
 
       await _notifications.zonedSchedule(
@@ -163,7 +164,7 @@ class NotificationsService {
           scheduled = scheduled.add(Duration(days: 1));
         }
 
-        print("$weekday: $scheduled");
+        debugPrint("$weekday: $scheduled");
 
         await _notifications.zonedSchedule(
           id + weekday + 1499,
