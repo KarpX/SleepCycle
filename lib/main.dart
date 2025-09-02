@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -235,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _selectedTime = picked;
         generateTimeList();
       });
-      print('Выбрано время: ${_selectedTime.format(context)}');
+      debugPrint('Выбрано время: ${_selectedTime.format(context)}');
     }
   }
 
@@ -293,7 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _selectedSleepingTime = picked;
         generateSleepingTimeList();
       });
-      print('Выбрано время: ${_selectedSleepingTime.format(context)}');
+      debugPrint('Выбрано время: ${_selectedSleepingTime.format(context)}');
     }
   }
 
@@ -302,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Future<Map<int, Map<String, dynamic>>> futureMap = _loadNotificationList();
     notificationsList = await futureMap;
     _updateButtonState();
-    print("notificationList: $notificationsList");
+    debugPrint("notificationList: $notificationsList");
     setState(() {
       cycleDurationMinutes = prefs.getInt('cycleDuration') ?? 90;
       enableBeforeSleepTime = prefs.getBool('enableBeforeSleepTime') ?? false;
@@ -362,7 +361,7 @@ class _MyHomePageState extends State<MyHomePage> {
       scheduledtime = scheduledtime.add(const Duration(days: 1));
     }
     int id = time.hour * 60 + time.minute;
-    print("планируем время отбоя");
+    debugPrint("планируем время отбоя");
     if (!notificationsList.containsKey(id)) {
       notificationsList.addAll({
         id: {"time": scheduledtime.toString(), "isActive": true, "days": days},
@@ -403,7 +402,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _updateButtonState() {
-    print("меняем кнопку: ${notificationsList.isNotEmpty}");
+    debugPrint("меняем кнопку: ${notificationsList.isNotEmpty}");
     setState(() {
       isAnyNotification = notificationsList.isNotEmpty;
       isAnyNotificationEnabled = _checkIsAnyNotificationEnabled();
@@ -933,7 +932,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                           if (date.isBefore(now) && notificationDays.isEmpty) {
                             notificationsList[id]!['isActive'] = false;
-                            print("NotificationDate: $date | Now: $now");
+                            debugPrint("NotificationDate: $date | Now: $now");
                           }
                           return Column(
                             children: [
@@ -1165,7 +1164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             value:
                                                 notificationsList[id]!['isActive'],
                                             onChanged: (value) async {
-                                              print(
+                                              debugPrint(
                                                 "Переключили уведомление $notification: $value",
                                               );
                                               if (!mounted) {
@@ -1231,7 +1230,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         selectedItems,
                                       );
                                       setState(() {
-                                        print(
+                                        debugPrint(
                                           "selectedItems: ${selectedItems.length}",
                                         );
                                         isSelectedMode = false;
@@ -1312,7 +1311,7 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         for (int id in list) {
           if (notificationsList[id]!['isActive'] == false) {
-            print(id);
+            debugPrint(id.toString());
             await _enableNotification(id);
           }
         }
@@ -1362,10 +1361,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _showSettingsDialog(BuildContext context) {
-    final _cycleController = TextEditingController(
+    final cycleController = TextEditingController(
       text: cycleDurationMinutes.toString(),
     );
-    final _beforeSleepController = TextEditingController(
+    final beforeSleepController = TextEditingController(
       text: beforeSleepTime.toString(),
     );
 
@@ -1448,7 +1447,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               generateTimeList();
                             }
                           },
-                          controller: _cycleController,
+                          controller: cycleController,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 24.spMin,
@@ -1515,7 +1514,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   generateTimeList();
                                 }
                               },
-                              controller: _beforeSleepController,
+                              controller: beforeSleepController,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 24.spMin,

@@ -1,6 +1,6 @@
 # SleepCycle
 
-A flutter sleep control application.
+A sleep management app.
 
 ## Getting Started
 
